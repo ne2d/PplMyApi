@@ -188,6 +188,31 @@ class Api
             ? $result->GetParcelShopsResult->ResultData->MyApiParcelShop
             : [];
     }
+    
+    /**
+     * @param null $city
+     * @param string $countryCode
+     * @return mixed
+     * @throws \Exception
+     * @throws WrongDataException
+     */
+    public function getParcelShopsByCity($city = null, $countryCode = Country::CZ)
+    {
+        if (!in_array($countryCode, Country::$list)) {
+            throw new WrongDataException(sprintf('Country Code %s is not supported, use one of %s', $countryCode, implode(', ', Country::$list)));
+        }
+
+        $result = $this->soap->GetParcelShops([
+            'Filter' => [
+                'City' => $city,
+                'CountryCode' => $countryCode
+            ]
+        ]);
+
+        return isset($result->GetParcelShopsResult->ResultData->MyApiParcelShop)
+            ? $result->GetParcelShopsResult->ResultData->MyApiParcelShop
+            : [];
+    }    
 
     /**
      * @param string $countryCode
